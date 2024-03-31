@@ -1,0 +1,19 @@
+---
+- name: Pull and Run Kali Linux Docker Container
+  hosts: all
+  become: true
+  tasks:
+    - name: Pull Kali Linux Docker Image
+      community.docker.docker_image:
+        name: kalilinux/kali-rolling
+        source: pull
+
+    - name: Run Kali Linux Docker Container
+      community.docker.docker_container:
+        name: kali_container
+        image: kalilinux/kali-rolling
+        state: started
+        interactive: yes
+        tty: true
+        command: "/bin/bash"
+        restart_policy: always
