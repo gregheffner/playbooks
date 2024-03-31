@@ -11,8 +11,9 @@
 ## Details
 
 - **Docker.yml**: centOS Docker installer
+- **kaliDockerBuild.yml**: build new kali docker image
 
 ## Deploy
 ```bash
-ansible-playbook Docker.yml -l centOS -u ansible
+ansible-playbook {playbook_name} -l {destination} -u {user}
 ```
