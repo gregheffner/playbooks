@@ -14,12 +14,8 @@
         dest: /etc/yum.repos.d/docker-ce.repo
 
     - name: Install Docker
-      yum:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-        state: latest
+      yum: name={{ item }} state=latest
+      loop: [docker-ce, docker-ce-cli, containerd.io]
 
     - name: Start Docker service
       service:
