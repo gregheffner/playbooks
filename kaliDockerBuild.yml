@@ -1,3 +1,5 @@
+### Pull and Run Kali Linux Docker Container with custom mapped drives
+
 ---
 - name: Pull and Run Kali Linux Docker Container
   hosts: all
@@ -12,8 +14,23 @@
       community.docker.docker_container:
         name: kali_container
         image: kalilinux/kali-rolling
+        volumes:
+          - /home/ansible/mnt/kali:/kali/Documents
         state: started
         interactive: yes
         tty: true
         command: "/bin/bash"
         restart_policy: always
+
+    - name: Upgrade all packages in Kali Linux Docker Container
+      community.general.shell:
+        cmd: docker exec -it kali_container /bin/bash -c "apt-get update && apt-get upgrade -y"
+        executable: /bin/bash
+        chdir: /root
+        creates: /root/.upgrade_completed
+        register: upgrade_result
+
+    - name: Check if package upgrade was successful
+      debug:
+        msg: "Package upgrade completed successfully"
+      when: upgrade_result is succeeded
