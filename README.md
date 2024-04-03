@@ -10,10 +10,11 @@
 
 ## Details
 
+- **main.yml**: main playbook with nested plpaybooks in it
 - **Docker.yml**: centOS Docker installer
-- **kaliDockerBuild.yml**: build new kali docker image
+- **kaliDockerBuild.yml**: build new kali docker image with updates and mapped drives for scripts
 
 ## Deploy
 ```bash
-ansible-playbook {playbook_name} -l {destination} -u {user}
+ansible-playbook main.yml -l {destination} -u {user}
 ```
