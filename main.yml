@@ -1,0 +1,7 @@
+##builds Docker images on a new machine
+---
+- name: Docker Setup
+  import_playbook: Docker.yml
+
+- name: Kali Setup
+  import_playbook: kaliDockerBuild.yml
