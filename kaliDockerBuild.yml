@@ -3,6 +3,8 @@
 ---
 - name: Pull and Run Kali Linux Docker Container
   hosts: all
+  collections:
+    - community.general
   become: true
   tasks:
     - name: Pull Kali Linux Docker Image
@@ -15,9 +17,13 @@
         name: kali_container
         image: kalilinux/kali-rolling
         volumes:
-          - /home/ansible/mnt/kali:/kali/Documents
+          - /home/ansible/mnt/kali:/root/
         state: started
         interactive: yes
         tty: true
         command: "/bin/bash"
         restart_policy: always
+
+    - name: Update and Upgrade packages in Kali Linux Docker Container
+      ansible.builtin.shell:
+        cmd: docker exec kali_container /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install openvpn -y"
