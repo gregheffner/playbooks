@@ -1,7 +1,7 @@
 ##builds Docker images on a new machine
 ---
 - name: Docker Setup
-  import_playbook: Docker.yml
+  import_playbook: tasks/Docker.yml
 
 - name: Kali Setup
-  import_playbook: kaliDockerBuild.yml
+  import_playbook: tasks/kaliDockerBuild.yml
