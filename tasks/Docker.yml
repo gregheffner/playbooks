@@ -1,0 +1,36 @@
+---
+- name: Install Docker-ce Centos
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check if pre-requisite packages are installed
+      yum:
+        list: "{{ item }}"
+      loop: [python3-pip, curl, yum-utils, device-mapper-persistent-data, lvm2]
+      register: package_status
+      ignore_errors: true
+
+    - name: Install pre-requisite packages
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ package_status.results | rejectattr('stdout', 'search', '^.*installed.*$') | map(attribute='item') | list }}"
+      when: item is defined
+
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+
+    - name: Install Docker
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop: [docker-ce, docker-ce-cli, containerd.io]
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
