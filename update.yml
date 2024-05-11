@@ -1,0 +1,29 @@
+---
+- name: Update and restart Podman containers
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update Podman packages
+      yum:
+        name: podman
+        state: latest
+
+    - name: Get list of all container IDs
+      shell: podman ps -aq
+      register: container_ids
+      changed_when: false
+
+    - name: Restart all Podman containers
+      shell: podman restart {{ item }}
+      with_items: "{{ container_ids.stdout_lines }}"
+      when: container_ids.stdout_lines | length > 0
+
+    - name: Schedule Ansible playbook to run monthly
+      cron:
+        name: "Run update.yml playbook"
+        minute: "0"
+        hour: "1"
+        day: "1"
+        job: "ansible-playbook /Users/Greg/scripts/ansible/update.yml"
+        user: "root"

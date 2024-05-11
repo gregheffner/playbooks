@@ -1,0 +1,16 @@
+---
+- name: Upgrade and update CentOS 9 packages
+  hosts: centOS
+  become: true
+
+  tasks:
+    - name: Update package cache
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
