@@ -25,5 +25,5 @@
         minute: "0"
         hour: "1"
         day: "1"
-        job: "ansible-playbook /Users/Greg/scripts/ansible/update.yml"
+        job: "ansible-playbook ~/update.yml"
         user: "root"
