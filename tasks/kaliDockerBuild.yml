@@ -24,5 +24,6 @@
         devices:
           - "/dev/net/tun:/dev/net/tun"
 
-    - name: Update and Upgrade packages in Kali Linux Docker Container
-      ansible.builtin.shell:
+- name: Update and Upgrade packages in Kali Linux Docker Container
+  ansible.builtin.shell:
+      cmd: docker exec kali_container /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install openvpn -y"
