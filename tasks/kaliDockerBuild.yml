@@ -1,15 +1,15 @@
 - hosts: 127.0.0.1
   connection: local
   tasks:
-    - name: Pull Full Kali Linux Docker Image
+    - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
-        name: kalilinux/kali
+        name: kalilinux/kali-rolling:latest
         source: pull
 
-    - name: Run Full Kali Linux Docker Container
+    - name: Run Kali Linux Docker Container
       community.docker.docker_container:
         name: kali_container
-        image: kalilinux/kali
+        image: kalilinux/kali-rolling:latest
         volumes:
           - /home/ansible/mnt/kali:/root/
           - /dev/net/tun:/dev/net/tun
