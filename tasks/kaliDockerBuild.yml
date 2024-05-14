@@ -24,17 +24,20 @@
         devices:
           - "/dev/net/tun:/dev/net/tun"
         ports:
-          - "3389:3389"
+          - "3390:3389"
 
     - name: Update, Upgrade, and Install needed packages
       ansible.builtin.shell:
-          cmd: docker exec kali_container /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install openvpn xrdp -y"
+        cmd: docker exec kali_container /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install openvpn -y"
+
+    - name: Install XFCE and other necessary packages
+      ansible.builtin.shell:
+        cmd: docker exec kali_container /bin/bash -c "apt-get install -y xfce4 xfce4-goodies xorg dbus-x11 xrdp"
 
     - name: Start xrdp service
       ansible.builtin.shell:
-          cmd: docker exec kali_container /bin/bash -c "service xrdp start"
+        cmd: docker exec kali_container /bin/bash -c "service xrdp start"
     
     - name: Set root password
       ansible.builtin.shell:
         cmd: docker exec kali_container /bin/bash -c "echo 'root:password' | chpasswd"
-    
