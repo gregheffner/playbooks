@@ -1,4 +1,5 @@
-- hosts: localhost
+- hosts: 127.0.0.1
+  connection: local
   tasks:
     - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
