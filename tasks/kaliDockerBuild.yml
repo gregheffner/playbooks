@@ -3,13 +3,13 @@
   tasks:
     - name: Pull Full Kali Linux Docker Image
       community.docker.docker_image:
-        name: kalilinux/kali-rolling:full
+        name: kalilinux/kali
         source: pull
 
     - name: Run Full Kali Linux Docker Container
       community.docker.docker_container:
         name: kali_container
-        image: kalilinux/kali-rolling:full
+        image: kalilinux/kali
         volumes:
           - /home/ansible/mnt/kali:/root/
           - /dev/net/tun:/dev/net/tun
