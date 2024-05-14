@@ -1,35 +1,27 @@
-### Pull and Run Kali Linux Docker Container with custom mapped drives
-
----
-- name: Pull and Run Kali Linux Docker Container
-  hosts: all
-  collections:
-    - community.general
-  become: true
+- hosts: localhost
   tasks:
     - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
         name: kalilinux/kali-rolling
         source: pull
 
-- name: Run Kali Linux Docker Container
-  community.docker.docker_container:
-    name: kali_container
-    image: kalilinux/kali-rolling
-    volumes:
-      - /home/ansible/mnt/kali:/root/
-      - /dev/net/tun:/dev/net/tun
-    state: started
-    interactive: yes
-    tty: true
-    command: "/bin/bash"
-    restart_policy: always
-    capabilities:
-      - NET_ADMIN
-      - SYS_ADMIN
-    devices:
-      - "/dev/net/tun:/dev/net/tun"
+    - name: Run Kali Linux Docker Container
+      community.docker.docker_container:
+        name: kali_container
+        image: kalilinux/kali-rolling
+        volumes:
+          - /home/ansible/mnt/kali:/root/
+          - /dev/net/tun:/dev/net/tun
+        state: started
+        interactive: yes
+        tty: true
+        command: "/bin/bash"
+        restart_policy: always
+        capabilities:
+          - NET_ADMIN
+          - SYS_ADMIN
+        devices:
+          - "/dev/net/tun:/dev/net/tun"
 
-- name: Update and Upgrade packages in Kali Linux Docker Container
-  ansible.builtin.shell:
-      cmd: docker exec kali_container /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install openvpn -y"
+    - name: Update and Upgrade packages in Kali Linux Docker Container
+      ansible.builtin.shell:
