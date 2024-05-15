@@ -8,6 +8,7 @@
       yum:
         name: podman
         state: latest
+      when: ansible_os_family != "Darwin"
 
     - name: Get list of all container IDs
       shell: podman ps -aq
@@ -25,5 +26,23 @@
         minute: "0"
         hour: "1"
         day: "1"
-        job: "ansible-playbook ~/update.yml"
-        user: "root"
+        job: "ansible-playbook /home/ansible/ansibleStuff/playbooks/update.yml"
+        user: "ansible"
+
+    - name: Update all Homebrew packages
+      homebrew:
+        update_homebrew: yes
+        upgrade_all: yes
+      when: ansible_os_family == "Darwin"
+
+    - name: Update all DNF packages
+      dnf:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "RedHat"    
+    
+    - name: Append to local file
+      delegate_to: centOS
+      lineinfile:
+        path: "./updates.txt"
+        line: "Last update: {{ ansible_date_time.iso8601 }}"
