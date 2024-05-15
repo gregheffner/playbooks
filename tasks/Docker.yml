@@ -75,4 +75,17 @@
       become_user: ansible
       homebrew:
         name: dry
-        state: present 
+        state: present
+
+    - name: Add dry to ansible user's PATH
+      become: yes
+      become_user: ansible
+      lineinfile:
+        path: /home/ansible/.bashrc
+        line: 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"'
+        create: yes
+
+    - name: Source .bashrc
+      become: yes
+      become_user: ansible
+      shell: source /home/ansible/.bashrc
