@@ -25,8 +25,8 @@
         name: "Run update.yml playbook"
         minute: "0"
         hour: "1"
-        day: "1"
-        job: "ansible-playbook /home/ansible/ansibleStuff/playbooks/update.yml"
+        day: "16"
+        job: "/bin/ansible-playbook /home/ansible/ansibleStuff/playbooks/update.yml -l centOS -u ansible"
         user: "ansible"
 
     - name: Update all Homebrew packages
