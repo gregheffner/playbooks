@@ -75,4 +75,4 @@
       become_user: ansible
       homebrew:
         name: dry
-        state: present
+        state: present 
