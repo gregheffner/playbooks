@@ -34,3 +34,31 @@
         name: docker
         state: started
         enabled: yes
+
+    - name: Install Homebrew as ansible user
+      become: yes
+      become_user: ansible
+      shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /home/ansible/.linuxbrew
+
+    - name: Add Homebrew to ansible user's PATH
+      become: yes
+      become_user: ansible
+      lineinfile:
+        path: /home/ansible/.bashrc
+        line: 'eval "$(/home/ansible/.linuxbrew/bin/brew shellenv)"'
+        create: yes
+
+    - name: Install 'Development Tools'
+      become: yes
+      yum:
+        name: '@Development Tools'
+        state: present
+
+    - name: Install gcc with Homebrew
+      become: yes
+      become_user: ansible
+      homebrew:
+        name: gcc
+        state: present
