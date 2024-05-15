@@ -33,7 +33,8 @@
       homebrew:
         update_homebrew: yes
         upgrade_all: yes
-      when: ansible_os_family == "Darwin"
+        become: yes
+        become_user: ansible
 
     - name: Update all DNF packages
       dnf:
