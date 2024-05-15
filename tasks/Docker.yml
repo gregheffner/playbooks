@@ -62,3 +62,17 @@
       homebrew:
         name: gcc
         state: present
+
+    - name: Add Homebrew tap for dry
+      become: yes
+      become_user: ansible
+      homebrew_tap:
+        name: moncho/dry
+        state: present
+
+    - name: Install dry with Homebrew
+      become: yes
+      become_user: ansible
+      homebrew:
+        name: dry
+        state: present
