@@ -84,8 +84,45 @@
         path: /home/ansible/.bashrc
         line: 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"'
         create: yes
+    - name: Add HOMEBREW_NO_ENV_HINTS to .bashrc
+      become: yes
+      become_user: ansible
+      lineinfile:
+        path: /home/ansible/.bashrc
+        line: 'export HOMEBREW_NO_ENV_HINTS=1'
+        create: yes
 
     - name: Source .bashrc
       become: yes
       become_user: ansible
       shell: source /home/ansible/.bashrc
+
+    - name: Tap repositories
+      become: yes
+      become_user: ansible
+      homebrew_tap:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - cjbassi/ytop
+
+    - name: Install brew packages
+      become: yes
+      become_user: ansible
+      homebrew:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - cask
+        - docker
+        - fzf
+        - git
+        - htop
+        - lsd
+        - midnight-commander
+        - neofetch
+        - nmap
+        - tldr
+        - zsh
+        - zsh-syntax-highlighting
+        - cjbassi/ytop/ytop
