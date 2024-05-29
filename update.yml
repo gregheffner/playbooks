@@ -34,6 +34,12 @@
         state: latest
       when: ansible_os_family == "Debian"
 
+    - name: Update OS
+      become: yes
+      apt:
+        upgrade: dist
+      when: ansible_os_family == "Debian"
+
     - name: Append to local file
       delegate_to: localhost
       lineinfile:
