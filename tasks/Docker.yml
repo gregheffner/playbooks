@@ -1,89 +1,47 @@
 ---
-- name: Install Docker-ce Centos
+- name: Install Docker-ce Ubuntu
   hosts: all
   become: true
 
   tasks:
-    - name: Check if pre-requisite packages are installed
-      yum:
-        list: "{{ item }}"
-      loop: [python3-pip, curl, yum-utils, device-mapper-persistent-data, lvm2]
-      register: package_status
-      ignore_errors: true
+
+    - name: Gather package facts
+      package_facts:
+        manager: auto
 
     - name: Install pre-requisite packages
-      yum:
+      apt:
         name: "{{ item }}"
         state: latest
-      loop: "{{ package_status.results | rejectattr('stdout', 'search', '^.*installed.*$') | map(attribute='item') | list }}"
-      when: item is defined
-
-    - name: Add Docker repo
-      get_url:
-        url: https://download.docker.com/linux/centos/docker-ce.repo
-        dest: /etc/yum.repos.d/docker-ce.repo
-
-    - name: Install Docker
-      yum:
-        name: "{{ item }}"
-        state: latest
-      loop: [docker-ce, docker-ce-cli, containerd.io]
-
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Install Homebrew as ansible user
-      become: yes
-      become_user: ansible
-      shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      args:
-        creates: /home/ansible/.linuxbrew
-
-    - name: Add Homebrew to ansible user's PATH
-      become: yes
-      become_user: ansible
-      lineinfile:
-        path: /home/ansible/.bashrc
-        line: 'eval "$(/home/ansible/.linuxbrew/bin/brew shellenv)"'
-        create: yes
+      loop: [python3-pip, curl, apt-transport-https, ca-certificates, software-properties-common]
+      when: "item not in ansible_facts.packages"
+      ignore_errors: true
 
     - name: Install 'Development Tools'
       become: yes
-      yum:
-        name: '@Development Tools'
+      apt:
+        name: build-essential
         state: present
 
     - name: Install gcc with Homebrew
       become: yes
-      become_user: ansible
-      homebrew:
+      apt:
         name: gcc
         state: present
 
     - name: Add Homebrew tap for dry
       become: yes
       become_user: ansible
-      homebrew_tap:
-        name: moncho/dry
-        state: present
-
-    - name: Install dry with Homebrew
-      become: yes
-      become_user: ansible
-      homebrew:
-        name: dry
-        state: present
+      shell: /bin/bash -c "sudo snap install dry --edge"
 
     - name: Add dry to ansible user's PATH
       become: yes
       become_user: ansible
       lineinfile:
         path: /home/ansible/.bashrc
-        line: 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"'
+        line: 'export PATH="/snap/bin:$PATH"'
         create: yes
+
     - name: Add HOMEBREW_NO_ENV_HINTS to .bashrc
       become: yes
       become_user: ansible
@@ -96,33 +54,23 @@
       become: yes
       become_user: ansible
       shell: source /home/ansible/.bashrc
-
-    - name: Tap repositories
-      become: yes
-      become_user: ansible
-      homebrew_tap:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - cjbassi/ytop
+      args:
+        executable: /bin/bash
 
     - name: Install brew packages
       become: yes
-      become_user: ansible
-      homebrew:
+      apt:
         name: "{{ item }}"
         state: present
       loop:
-        - cask
         - docker
         - fzf
         - git
         - htop
         - lsd
-        - midnight-commander
+        - mc
         - neofetch
         - nmap
         - tldr
         - zsh
         - zsh-syntax-highlighting
-        - cjbassi/ytop/ytop
