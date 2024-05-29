@@ -1,49 +1,41 @@
 ---
-- name: Update and restart Podman containers
+- name: Update and restart Docker containers
   hosts: all
-  become: true
 
   tasks:
-    - name: Update Podman packages
-      yum:
-        name: podman
+    - name: Update Docker packages on Kubernetes hosts
+      apt:
+        name: docker-ce
         state: latest
-      when: ansible_os_family != "Darwin"
+      become: yes
+      when: ansible_os_family == "Debian" and 'k8' in inventory_hostname
+
+    - name: Update Docker packages on local host
+      apt:
+        name: docker.io
+        state: latest
+      become: yes
+      when: ansible_os_family == "Debian" and 'k8' not in inventory_hostname
 
     - name: Get list of all container IDs
-      shell: podman ps -aq
+      shell: docker ps -aq
       register: container_ids
       changed_when: false
 
-    - name: Restart all Podman containers
-      shell: podman restart {{ item }}
+    - name: Restart all Docker containers
+      shell: docker restart {{ item }}
       with_items: "{{ container_ids.stdout_lines }}"
       when: container_ids.stdout_lines | length > 0
 
-    - name: Schedule Ansible playbook to run monthly
-      cron:
-        name: "Run update.yml playbook"
-        minute: "0"
-        hour: "1"
-        day: "16"
-        job: "/bin/ansible-playbook /home/ansible/ansibleStuff/playbooks/update.yml -l centOS -u ansible"
-        user: "ansible"
-
-    - name: Update all Homebrew packages
-      homebrew:
-        update_homebrew: yes
-        upgrade_all: yes
-        become: yes
-        become_user: ansible
-
-    - name: Update all DNF packages
-      dnf:
+    - name: Update all APT packages
+      become: yes
+      apt:
         name: '*'
         state: latest
-      when: ansible_os_family == "RedHat"    
-    
+      when: ansible_os_family == "Debian"
+
     - name: Append to local file
-      delegate_to: centOS
+      delegate_to: localhost
       lineinfile:
-        path: "./updates.txt"
-        line: "Last update: {{ ansible_date_time.iso8601 }}"
+        path: "~/updates/updates.txt"
+        line: "Last update on {{ inventory_hostname }}: {{ ansible_date_time.iso8601 }}"
