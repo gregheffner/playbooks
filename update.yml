@@ -3,20 +3,6 @@
   hosts: all
 
   tasks:
-    - name: Update Docker packages on Kubernetes hosts
-      apt:
-        name: docker-ce
-        state: latest
-      become: yes
-      when: ansible_os_family == "Debian" and 'k8' in inventory_hostname
-
-    - name: Update Docker packages on local host
-      apt:
-        name: docker.io
-        state: latest
-      become: yes
-      when: ansible_os_family == "Debian" and 'k8' not in inventory_hostname
-
     - name: Get list of all container IDs
       shell: docker ps -aq
       register: container_ids
