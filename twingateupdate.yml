@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  gather_facts: yes
+  become: yes
+  vars:
+    container_target_image: "{{ docker_image | default('twingate/connector:1') }}"
+    docker_origin_repo: "{{ container_target_image.split(':')[0] }}"
+    docker_origin_image: "{{ container_target_image.split(':')[1] }}"
+  tasks:
+    - name: Get running containers
+      shell: "docker ps --format {{'{{.Names}} {{.Image}}'}} | grep -e {{ docker_origin_repo | quote }}'/({{ docker_origin_image | quote }}|access-node)' | awk '{print $1}'"
+      register: running_containers
+      ignore_errors: true
+
+    - name: Pull latest images
+      command: "docker pull {{ container_target_image }}"
+      when: running_containers.stdout != ""
+
+    - name: Get container details
+      shell: "docker inspect --format \"{{'{{.Id}} {{.Image}} {{.Name}}'}}\" {{ item }}"
+      register: container_details
+      with_items: "{{ running_containers.stdout_lines }}"
+      when: running_containers.stdout != ""
+
+    - name: Save environment variables
+      shell: "docker container inspect {{ item.item }} --format '{{'{{join .Config.Env \"\\n\"}}'}}' | grep -v \"PATH\" > variables.env"
+      when: container_details.results | selectattr('stdout_lines', 'defined') | map(attribute='stdout_lines') | list | flatten | map('split') | list | selectattr(1, 'defined') | map(attribute=1) | list | first != container_details.results | selectattr('stdout_lines', 'defined') | map(attribute='stdout_lines') | list | flatten | map('split') | list | selectattr(0, 'defined') | map(attribute=0) | list | first
+      with_items: "{{ container_details.results }}"
+      loop_control:
+        label: "{{ item.item }}"

@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Schedule cron job for Ansible user
+      cron:
+        name: "Run update playbook"
+        user: "ansible"
+        minute: "0"
+        hour: "4"
+        day: "*"
+        weekday: "6"
+        job: "ansible-playbook /home/ansible/playbooks/update.yml"
+        state: present
