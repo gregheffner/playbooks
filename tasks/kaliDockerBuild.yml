@@ -28,7 +28,7 @@
 
     - name: Update, Upgrade, and Install needed packages
       ansible.builtin.shell:
-        cmd: docker exec kali_container /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install openvpn -y"
+        cmd: docker exec kali_container /bin/bash -c "export DEBIAN_FRONTEND=noninteractive && apt-get update -y && apt-get upgrade -y && apt-get install kali-linux-everything -y && apt-get install openvpn -y"
 
     - name: Install XFCE and other necessary packages
       ansible.builtin.shell:
