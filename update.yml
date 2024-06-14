@@ -1,5 +1,5 @@
 ---
-- name: Update and restart Docker containers
+- name: Update and restart including docker containers
   hosts: all
 
   tasks:
@@ -31,3 +31,8 @@
       lineinfile:
         path: "~/updates/updates.txt"
         line: "Last update on {{ inventory_hostname }}: {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
+
+    - name: Reboot
+      shell: systemctl reboot -i
+      ignore_errors: true
+      become: yes
