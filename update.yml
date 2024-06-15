@@ -1,6 +1,6 @@
 ---
 - name: Update and restart including docker containers
-  hosts: all
+  hosts: localhost
 
   tasks:
     - name: Get list of all container IDs
