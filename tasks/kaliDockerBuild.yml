@@ -34,7 +34,7 @@
 
     - name: Install Kali Linux (full)
       ansible.builtin.shell:
-        cmd: docker exec kali_container /bin/bash -c "apt-get update -y && apt-get upgrade -y && apt-get install kali-linux-everything && apt-get install openvpn -y"
+        cmd: docker exec kali_container /bin/bash -c "apt-get update -y && apt-get upgrade -y && apt-get install kali-linux-everything -y && apt-get install openvpn -y"
       when: install_type == 'full'
 
     - name: Install Kali Linux (light)
