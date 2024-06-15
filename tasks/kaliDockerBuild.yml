@@ -1,5 +1,10 @@
 - hosts: dockerhost
   connection: local
+  vars_prompt:
+    - name: "install_type"
+      prompt: "Do you want a full or light install? (full/light)"
+      private: no
+  
   tasks:
     - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
@@ -26,9 +31,16 @@
         ports:
           - "3390:3389"
 
-    - name: Update, Upgrade, and Install needed packages
+
+    - name: Install Kali Linux (full)
       ansible.builtin.shell:
-        cmd: docker exec kali_container /bin/bash -c "export DEBIAN_FRONTEND=noninteractive && apt-get update -y && apt-get upgrade -y && apt-get install kali-linux-everything -y && apt-get install openvpn -y"
+        cmd: docker exec kali_container /bin/bash -c "apt-get update -y && apt-get upgrade -y && apt-get install kali-linux-everything && apt-get install openvpn -y"
+      when: install_type == 'full'
+
+    - name: Install Kali Linux (light)
+      ansible.builtin.shell:
+        cmd: docker exec kali_container /bin/bash -c "apt-get update -y && apt-get upgrade -y && apt-get install openvpn -y"
+      when: install_type == 'light'
 
     - name: Install XFCE and other necessary packages
       ansible.builtin.shell:
