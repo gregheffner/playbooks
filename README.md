@@ -8,7 +8,7 @@
 1. [Details](#details)
 1. [Deploy](#deploy)
 
-## Details - UBUNUTU OS
+## Details - UBUNTU OS
 
 - **main.yml**: Run this to install docker and kali
 - **Docker.yml**: Docker installer with Brew
