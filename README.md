@@ -12,7 +12,7 @@
 
 - **main.yml**: Run this to install docker and kali
 - **Docker.yml**: Docker installer with Brew
-- **kaliDockerBuild.yml**: Kali image with mapped drive and rdp via xrdp. This will take 20 minutes to run and update all packages. 
+- **kaliDockerBuild.yml**: Kali image with mapped drive and rdp via xrdp.
 - **update.yml**: Updates docker, and os packages, includes a reboot
 
 ## Deploy
