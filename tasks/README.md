@@ -14,7 +14,7 @@ Description: This script rebookts Kubernetes clusters without outage. Draining n
 ## Script 3: `kaliDockerBuild.yml`
 
 Description: This script will run Kali with all packages installed on a docker image. Mounts local drive, enables RDP and sets up RDP. Generates default root:password for RDP session. 
-PLEASE CHANGE PASSWORD ASAP
+PLEASE CHANGE PASSWORD ASAP initial download will take about 5 minutes but only initially or if the docker imagae is deleted from your local system
 
 
 
