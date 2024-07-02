@@ -11,8 +11,8 @@
 ## Details - UBUNTU OS
 
 - **main.yml**: Run this to install docker and kali
-- **Docker.yml**: Docker installer with Brew
-- **kaliDockerBuild.yml**: Kali image with mapped drive and rdp via xrdp.
+- **cronschedule.yml**: This will schedule the update playbook to run in cron
+- **twingateupdate.yml**: just that but in docker
 - **update.yml**: Updates docker, and os packages, includes a reboot
 
 ## Deploy
