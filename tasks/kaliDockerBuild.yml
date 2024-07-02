@@ -10,7 +10,7 @@
     - name: Run Kali Linux Docker Container
       community.docker.docker_container:
         name: kali_container
-        image: technotuba/kali-full:v1
+        image: technotuba/kali-full:v2
         volumes:
           - /home/ansible/mnt/kali:/root/scripts/
           - /dev/net/tun:/dev/net/tun
