@@ -30,7 +30,7 @@
       delegate_to: localhost
       lineinfile:
         path: "~/updates/updates.txt"
-        line: "Last update on {{ inventory_hostname }}: {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
+        line: "Last dockerhost update on {{ inventory_hostname }}: {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
 
     - name: Reboot
       shell: systemctl reboot -i

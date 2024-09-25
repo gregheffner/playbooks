@@ -20,7 +20,7 @@
 
     - name: Pause for 5 seconds
       pause:
-        seconds: 5
+        seconds: 15
    
     - name: Uncordon the node
       command: kubectl uncordon {{ inventory_hostname }}

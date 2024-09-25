@@ -1,0 +1,45 @@
+---
+- name: Update all OS packages on Windows systems and list package versions
+  hosts: windows
+  tasks:
+    - name: Retrieve installed packages information before update
+      win_shell: |
+        $packages = Get-WmiObject -Class Win32_Product
+        $packageInfo = $packages | Select-Object Name, Version, @{Name="LastUpdate"; Expression={(Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | Where-Object { $_.DisplayName -eq $_.Name }).InstallDate}}
+        $packageInfo | ConvertTo-Json -Compress
+      register: package_info_before
+
+    - name: Update all Windows packages
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - Updates
+          - UpdateRollups
+          - FeaturePacks
+          - ServicePacks
+        reboot: yes
+      register: update_result
+
+    - name: Retrieve installed packages information after update
+      win_shell: |
+        $packages = Get-WmiObject -Class Win32_Product
+        $packageInfo = $packages | Select-Object Name, Version, @{Name="LastUpdate"; Expression={(Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | Where-Object { $_.DisplayName -eq $_.Name }).InstallDate}}
+        $packageInfo | ConvertTo-Json -Compress
+      register: package_info_after
+
+    - name: Find differences in packages
+      win_shell: |
+        $before = ConvertFrom-Json '{{ package_info_before.stdout }}'
+        $after = ConvertFrom-Json '{{ package_info_after.stdout }}'
+        $diff = Compare-Object -ReferenceObject $before -DifferenceObject $after -Property Name, Version, LastUpdate
+        $diff | Format-Table -AutoSize | Out-String
+      register: package_diff
+
+    - name: Display differences in packages
+      debug:
+        msg: "{{ package_diff.stdout }}"
+
+    - name: Reboot if required
+      win_reboot:
+      when: update_result.reboot_required

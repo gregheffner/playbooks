@@ -1,22 +1,17 @@
 - hosts: dockerhost
   connection: local
-  vars_prompt:
-    - name: "install_type"
-      prompt: "Do you want a full or light install? (full/light)"
-      private: no
-  
   tasks:
     - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
-        name: kalilinux/kali-rolling:latest
+        name: technotuba/kali-full:v2
         source: pull
 
     - name: Run Kali Linux Docker Container
       community.docker.docker_container:
         name: kali_container
-        image: kalilinux/kali-rolling:latest
+        image: technotuba/kali-full:v2
         volumes:
-          - /home/ansible/mnt/kali:/root/
+          - /home/ansible/mnt/kali:/root/scripts/
           - /dev/net/tun:/dev/net/tun
         state: started
         interactive: yes
@@ -31,25 +26,10 @@
         ports:
           - "3390:3389"
 
-
-    - name: Install Kali Linux (full)
-      ansible.builtin.shell:
-        cmd: docker exec kali_container /bin/bash -c "apt-get update -y && apt-get upgrade -y && apt-get install kali-linux-everything -y && apt-get install openvpn -y"
-      when: install_type == 'full'
-
-    - name: Install Kali Linux (light)
-      ansible.builtin.shell:
-        cmd: docker exec kali_container /bin/bash -c "apt-get update -y && apt-get upgrade -y && apt-get install openvpn -y"
-      when: install_type == 'light'
-
-    - name: Install XFCE and other necessary packages
-      ansible.builtin.shell:
-        cmd: docker exec kali_container /bin/bash -c "apt-get install -y xfce4 xfce4-goodies xorg dbus-x11 xrdp"
-
     - name: Start xrdp service
       ansible.builtin.shell:
         cmd: docker exec kali_container /bin/bash -c "service xrdp start"
-    
+
     - name: Set root password
       ansible.builtin.shell:
         cmd: docker exec kali_container /bin/bash -c "echo 'root:password' | chpasswd"
