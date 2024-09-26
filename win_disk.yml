@@ -15,6 +15,6 @@
       # Get first system disk
       disk: '{{ ansible_facts.disks|selectattr("system_disk")|first }}'
 
-      # Show disk size in Gibibytes
+      # Show disk size in Gb
       disksize_gib_human: '{{ disk.size|filesizeformat(true) }}'
       disksize_gib: '{{ (disk.size/1024|pow(3))|round|int }} GiB'
