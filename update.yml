@@ -1,5 +1,5 @@
 ---
-- name: Update and restart including docker containers
+- name: Update and restart including docker container
   hosts: localhost
 
   tasks:
