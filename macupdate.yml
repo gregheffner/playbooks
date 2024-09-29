@@ -1,5 +1,5 @@
 ---
-- name: Update everything on M2 Mac
+- name: Update everything on Mac
   hosts: macOSX
   tasks:
     - name: Update macOS software
