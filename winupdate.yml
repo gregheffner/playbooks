@@ -1,5 +1,5 @@
 ---
-- name: Update all OS packages on Windows systems and list package versions
+- name: Update all OS packages on Windows systems and list package version
   hosts: windows
   tasks:
     - name: Retrieve installed packages information before update
