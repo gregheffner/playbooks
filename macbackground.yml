@@ -16,7 +16,7 @@
         line: '{{ logged_in_user.stdout }} ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
 
-    - name: Copy the wallpaper image to the target machine
+    - name: Copy the wallpaper image 
       copy:
         src: ~/helene.jpg
         dest: /tmp/helene.jpg
