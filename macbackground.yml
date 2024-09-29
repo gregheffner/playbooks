@@ -1,0 +1,38 @@
+---
+- name: Change wallpaper from a local file
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Get the logged-in user
+      shell: who | grep console | awk '{print $1}'
+      register: logged_in_user
+
+    - name: Ensure logged-in user has passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^{{ logged_in_user.stdout }} ALL='
+        line: '{{ logged_in_user.stdout }} ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Copy the wallpaper image to the target machine
+      copy:
+        src: ~/helene.jpg
+        dest: /tmp/helene.jpg
+        mode: '0644'
+
+    - name: Ensure the wallpaper image exists
+      stat:
+        path: /tmp/helene.jpg
+      register: wallpaper_image
+
+    - name: Fail if the wallpaper image does not exist
+      fail:
+        msg: "The wallpaper image does not exist at the specified path."
+      when: not wallpaper_image.stat.exists
+
+    - name: Set desktop wallpaper
+      shell: |
+        launchctl asuser "$(id -u {{ logged_in_user.stdout.strip() }})" sudo -u {{ logged_in_user.stdout.strip() }} osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/tmp/helene.jpg"'
+      when: wallpaper_image.stat.exists

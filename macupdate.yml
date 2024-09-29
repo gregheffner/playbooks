@@ -1,0 +1,6 @@
+---
+- name: Update everything on M2 Mac
+  hosts: macOSX
+  tasks:
+    - name: Update macOS software
+      command: softwareupdate -i -a

@@ -11,13 +11,7 @@
 
     - name: Update all Windows packages
       win_updates:
-        category_names:
-          - SecurityUpdates
-          - CriticalUpdates
-          - Updates
-          - UpdateRollups
-          - FeaturePacks
-          - ServicePacks
+        category_names: '*'
         reboot: yes
       register: update_result
 
