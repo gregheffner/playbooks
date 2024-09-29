@@ -1,6 +1,8 @@
 ---
-- hosts: windows
+- name: Gets disk facts and prints them
+  hosts: windows
   tasks:
+
   - name: Get disk facts
     win_disk_facts:
 
