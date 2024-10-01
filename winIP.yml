@@ -1,7 +1,7 @@
 ---
 - name: Get Windows full IPv4 details
-    hosts: windows
-    gather_facts: no
+  hosts: windows
+  gather_facts: no
     tasks:
         - name: Gather IPv4 details
             win_shell: Get-NetIPAddress -AddressFamily IPv4 | Select-Object *
