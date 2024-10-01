@@ -1,5 +1,5 @@
 ---
-- name: Get Windows full IPv4 details
+- name: Get Windows full IPv4 details and DNS settings
   hosts: windows
   gather_facts: no
   tasks:
@@ -11,3 +11,25 @@
   - name: Display IPv4 details
     debug:
       var: ipv4_details.stdout_lines
+
+  - name: Gather DNS server details
+    win_shell: Get-DnsClientServerAddress -AddressFamily IPv4 | Select-Object *
+    register: dns_details
+
+  - name: Display DNS server details
+    debug:
+      var: dns_details.stdout_lines
+
+  - name: Check for unset DNS server details
+    win_shell: |
+      $dnsServers = Get-DnsClientServerAddress -AddressFamily IPv4
+      if ($dnsServers.ServerAddresses -eq $null) {
+        Write-Output "DNS server details are not set"
+      } else {
+        Write-Output "DNS server details are set"
+      }
+    register: dns_check
+
+  - name: Display DNS check result
+    debug:
+      var: dns_check.stdout_lines
