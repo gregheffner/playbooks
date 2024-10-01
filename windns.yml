@@ -1,0 +1,11 @@
+---
+- name: Change DNS settings on Windows device
+    hosts: windows
+    tasks:
+        - name: Set DNS server addresses
+            win_dns_client:
+                adapter_names:
+                    - "Ethernet"
+                dns_servers:
+                    - "8.8.8.8"
+                    - "8.8.4.4"
