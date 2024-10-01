@@ -2,11 +2,12 @@
 - name: Get Windows full IPv4 details
   hosts: windows
   gather_facts: no
-    tasks:
-        - name: Gather IPv4 details
-            win_shell: Get-NetIPAddress -AddressFamily IPv4 | Select-Object *
-            register: ipv4_details
+  tasks:
+  
+  - name: Gather IPv4 details
+    win_shell: Get-NetIPAddress -AddressFamily IPv4 | Select-Object *
+    register: ipv4_details
 
-        - name: Display IPv4 details
-            debug:
-                var: ipv4_details.stdout_lines
+  - name: Display IPv4 details
+    debug:
+      var: ipv4_details.stdout_lines
