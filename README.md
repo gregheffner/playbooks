@@ -11,7 +11,7 @@
 - **main.yml**: Run this to install docker and kali
 - **Twingateupdate.yml**: Updates twingate docker images
 - **update.yml**: Linux update script
-- **winFAMdns.yml**: Setting DNS to default [CLean Browsings Adult Filter](https://cleanbrowsing.org/filters/)
+- **winFAMdns.yml**: Setting DNS to default [Clean Browsings Adult Filter](https://cleanbrowsing.org/filters/)
 - **winIP.yml**: Gathers full IP details
 - **win_disk.yml**: Provides disk information for windows
 - **windns.yml**: Gathers full DNS settings on a windows machine
