@@ -1,5 +1,5 @@
 ---
-- name: Change DNS settings on Windows device
+- name: Change DNS settings to Wheeler default
   hosts: windows
   tasks:
   
@@ -8,7 +8,7 @@
       adapter_names:
         - "Wi-Fi"
       dns_servers:
-        - "192.168.1.53"
+        - "185.228.168.10"
+        - "185.228.168.11"
         - "172.64.36.1"
         - "172.64.36.2"
-        - "1.1.1.1"

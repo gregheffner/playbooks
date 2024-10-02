@@ -18,13 +18,13 @@
 
     - name: Copy the wallpaper image 
       copy:
-        src: ~/helene.jpg
-        dest: /tmp/helene.jpg
+        src: ~/unnamed.png
+        dest: /tmp/unnamed.png
         mode: '0644'
 
     - name: Ensure the wallpaper image exists
       stat:
-        path: /tmp/helene.jpg
+        path: /tmp/unnamed.png
       register: wallpaper_image
 
     - name: Fail if the wallpaper image does not exist
@@ -34,5 +34,5 @@
 
     - name: Set desktop wallpaper
       shell: |
-        launchctl asuser "$(id -u {{ logged_in_user.stdout.strip() }})" sudo -u {{ logged_in_user.stdout.strip() }} osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/tmp/helene.jpg"'
+        launchctl asuser "$(id -u {{ logged_in_user.stdout.strip() }})" sudo -u {{ logged_in_user.stdout.strip() }} osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/tmp/unnamed.png"'
       when: wallpaper_image.stat.exists

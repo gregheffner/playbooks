@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Update Twingate Docker images
+  hosts: docker
   gather_facts: yes
   become: yes
   vars:
