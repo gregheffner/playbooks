@@ -3,15 +3,15 @@
   tasks:
     - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
-        name: technotuba/kali-full:v2
+        name: technotuba/kali-full:v2024.11
         source: pull
 
     - name: Run Kali Linux Docker Container
       community.docker.docker_container:
         name: kali_container
-        image: technotuba/kali-full:v2
+        image: technotuba/kali-full:v2024.11
         volumes:
-          - /home/ansible/mnt/kali:/root/scripts/
+          - /mnt/QNAP/kali:/root/scripts/
           - /dev/net/tun:/dev/net/tun
         state: started
         interactive: yes
