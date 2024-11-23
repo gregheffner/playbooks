@@ -29,7 +29,7 @@
     - name: Append to local file
       delegate_to: localhost
       lineinfile:
-        path: "~/updates/updates.txt"
+        path: "/mnt/QNAP/backuplogs/updates/updates.txt"
         line: "Last dockerhost update on {{ inventory_hostname }}: {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
 
     - name: Reboot
