@@ -1,0 +1,33 @@
+---
+- name: Install Discord on Windows PC
+  hosts: windows
+  tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: Ensure Downloads folder exists
+      win_file:
+        path: "{{ ansible_env.USERPROFILE }}\\Downloads"
+        state: directory
+
+    - name: Download Discord installer
+      win_get_url:
+        url: "https://discord.com/api/download?platform=win"
+        dest: "{{ ansible_env.USERPROFILE }}\\Downloads\\DiscordSetup.exe"
+
+    - name: Install Discord
+      win_package:
+        path: "{{ ansible_env.USERPROFILE }}\\Downloads\\DiscordSetup.exe"
+        arguments: /S
+        state: present
+
+    - name: Find Discord executable
+      win_find:
+        paths: "{{ ansible_env.USERPROFILE }}\\AppData\\Local\\Discord"
+        patterns: 'Discord.exe'
+      register: discord_executable
+
+    - name: Open Discord application
+      win_shell: |
+        Start-Process "{{ discord_executable.files[0].path }}" -NoNewWindow -Wait
+      when: discord_executable.matched > 0
