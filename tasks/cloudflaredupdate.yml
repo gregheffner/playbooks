@@ -1,0 +1,17 @@
+---
+- name: Download and install Cloudflare Tunnel on Ubuntu
+  hosts: cloudflared_hosts
+  tasks:
+    - name: Download cloudflared package
+      ansible.builtin.get_url:
+        url: https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+        dest: /tmp/cloudflared.deb
+
+    - name: Install cloudflared package
+      ansible.builtin.apt:
+        deb: /tmp/cloudflared.deb
+        state: present
+
+    - name: Restart cloudflared service using systemctl
+      ansible.builtin.command:
+        cmd: sudo systemctl restart cloudflared
