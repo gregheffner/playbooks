@@ -1,0 +1,17 @@
+---
+- name: Uninstall Discord from Windows
+  hosts: windows
+  tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+
+    - name: Find Discord product ID
+      win_shell: |
+        (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "Discord" }).IdentifyingNumber
+      register: discord_product_id
+
+    - name: Uninstall Discord
+      win_package:
+        product_id: "{{ discord_product_id.stdout }}"
+        state: absent
+      when: discord_product_id.stdout is defined and discord_product_id.stdout != ''
