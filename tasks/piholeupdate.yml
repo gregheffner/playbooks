@@ -1,0 +1,12 @@
+---
+- name: Update Pi-hole
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Update Pi-hole to the latest version
+      command: pihole -up
+      register: update_result
+
+    - name: Display update result
+      debug:
+        var: update_result.stdout
