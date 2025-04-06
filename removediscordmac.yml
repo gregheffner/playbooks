@@ -1,0 +1,29 @@
+---
+- name: Uninstall Discord from Mac
+  hosts: macOSX
+  gather_facts: false
+  tasks:
+    - name: Check if Discord is installed
+      stat:
+        path: /Applications/Discord.app
+      register: discord_app
+
+    - name: Remove Discord application
+      command: rm -rf /Applications/Discord.app
+      when: discord_app.stat.exists
+
+    - name: Remove Discord user data
+      command: rm -rf ~/Library/Application\ Support/discord
+      ignore_errors: true
+
+    - name: Remove Discord caches
+      command: rm -rf ~/Library/Caches/com.hnc.Discord
+      ignore_errors: true
+
+    - name: Remove Discord preferences
+      command: rm -rf ~/Library/Preferences/com.hnc.Discord.plist
+      ignore_errors: true
+
+    - name: Confirm Discord uninstallation
+      debug:
+        msg: "Discord has been uninstalled successfully."
