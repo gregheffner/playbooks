@@ -26,6 +26,19 @@
         upgrade: dist
       when: ansible_os_family == "Debian"
 
+    - name: Check if Homebrew is installed
+      shell: which brew
+      register: brew_check
+      changed_when: false
+
+    - name: Update Homebrew
+      shell: brew update
+      when: brew_check.stdout != ""
+
+    - name: Upgrade Homebrew packages
+      shell: brew upgrade
+      when: brew_check.stdout != ""
+
     - name: Append to local file
       delegate_to: localhost
       lineinfile:
