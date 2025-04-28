@@ -3,13 +3,13 @@
   tasks:
     - name: Pull Kali Linux Docker Image
       community.docker.docker_image:
-        name: technotuba/kali-full:v2024.12
+        name: technotuba/kali-full:v2025.3
         source: pull
 
     - name: Run Kali Linux Docker Container
       community.docker.docker_container:
         name: kali_container
-        image: technotuba/kali-full:v2024.12
+        image: technotuba/kali-full:v2025.3
         volumes:
           - /mnt/QNAP/kali:/root/scripts/
           - /dev/net/tun:/dev/net/tun
