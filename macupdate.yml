@@ -2,5 +2,15 @@
 - name: Update everything on Mac
   hosts: macOSX
   tasks:
-    - name: Update macOS software
-      command: softwareupdate -i -a
+    - name: Check for available updates
+      command: softwareupdate -l
+      register: update_check
+      ignore_errors: yes
+
+    - name: Install all available updates
+      command: softwareupdate -ia
+      when: update_check is succeeded
+
+    - name: Reboot the system if required
+      command: shutdown -r now
+      when: "'restart' in update_check.stdout"

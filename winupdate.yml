@@ -2,6 +2,9 @@
 - name: Update all OS packages on Windows systems and list package version
   hosts: windows
   tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+
     - name: Retrieve installed packages information before update
       win_shell: |
         $packages = Get-WmiObject -Class Win32_Product
@@ -9,9 +12,11 @@
         $packageInfo | ConvertTo-Json -Compress
       register: package_info_before
 
-    - name: Update all Windows packages
+    - name: Install critical and security updates
       win_updates:
-        category_names: '*'
+        category_names:
+          - CriticalUpdates
+          - SecurityUpdates
         reboot: yes
       register: update_result
 
@@ -27,12 +32,13 @@
         $before = ConvertFrom-Json '{{ package_info_before.stdout }}'
         $after = ConvertFrom-Json '{{ package_info_after.stdout }}'
         $diff = Compare-Object -ReferenceObject $before -DifferenceObject $after -Property Name, Version, LastUpdate
-        $diff | Format-Table -AutoSize | Out-String
+        $diff | ConvertTo-Json -Compress
       register: package_diff
 
     - name: Display differences in packages
       debug:
-        msg: "{{ package_diff.stdout }}"
+        msg: "{{ package_diff.stdout | default('{}') | from_json }}"
+      when: package_diff.stdout is defined and package_diff.stdout != ''
 
     - name: Reboot if required
       win_reboot:

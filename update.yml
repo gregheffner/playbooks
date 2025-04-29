@@ -26,6 +26,10 @@
         upgrade: dist
       when: ansible_os_family == "Debian"
 
+    - name: Cleanup
+      become: yes
+      command: sudo apt autoremove --purge
+
     - name: Check if Homebrew is installed
       shell: which brew
       register: brew_check
