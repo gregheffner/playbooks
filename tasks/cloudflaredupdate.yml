@@ -1,6 +1,7 @@
 ---
 - name: Download and install Cloudflare Tunnel on Ubuntu
   hosts: cloudflared_hosts
+  become: true
   tasks:
     - name: Download cloudflared package
       ansible.builtin.get_url:
