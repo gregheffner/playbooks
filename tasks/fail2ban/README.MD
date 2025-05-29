@@ -1,6 +1,6 @@
 # Fail2Ban Jail Status Playbook
 
-![Fail2Ban Overview](fail2ban-summary.png)
+![Fail2Ban Overview](fail2banresult.png)
 
 This Ansible playbook summarizes the status of Fail2Ban jails and banned IPs for each `nginx-web-*` pod in a Kubernetes namespace.
 
@@ -38,6 +38,6 @@ This Ansible playbook summarizes the status of Fail2Ban jails and banned IPs for
 
 ## Image
 
-![Fail2Ban Jail Status Summary](fail2ban-summary.png)
+![Fail2Ban Jail Status Summary](fail2banresult.png)
 
-The included `fail2ban-summary.png` provides a visual overview of the process.
+The included `fail2banresult.png` provides a visual overview of the process.
