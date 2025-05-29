@@ -1,0 +1,48 @@
+---
+- name: Summarize fail2ban jail status per pod
+  hosts: cloudflared_hosts
+  gather_facts: no
+  vars:
+    namespace: default
+    log_path: /var/log/fail2ban.log
+
+  tasks:
+    - name: Get all pod names starting with nginx-web-
+      shell: |
+        kubectl get pods -n {{ namespace }} --no-headers -o custom-columns=":metadata.name" | grep '^nginx-web-'
+      register: nginx_pods
+
+    - name: Set list of nginx-web pods
+      set_fact:
+        fail2ban_pods: "{{ nginx_pods.stdout_lines }}"
+
+
+    - name: Parse fail2ban logs from container output for jail and ban stats
+      shell: |
+        kubectl logs -n {{ namespace }} -c fail2ban {{ item }} | grep "Creating new jail" | awk -F"'" '{print $2}' | sort | uniq | wc -l
+        kubectl logs -n {{ namespace }} -c fail2ban {{ item }} | grep "Ban " | awk '{print $NF}' | sort | uniq | wc -l
+      register: jail_ban_results
+      loop: "{{ fail2ban_pods }}"
+      when: fail2ban_pods | length > 0
+
+    - name: Set table width for centering
+      set_fact:
+        table_width: 200
+
+    - name: Build centered rectangular results table
+      set_fact:
+        jail_ban_table: |
+          {% set pad = ((ansible_env.COLUMNS | default(table_width, true)) | int - table_width) // 2 %}
+          {% set padstr = ' ' * (pad if pad > 0 else 0) %}
+          {{ padstr }}+-----------------------------+-------------+---------------+
+          {{ padstr }}| Pod Name                    | Number of   | Number of     |
+          {{ padstr }}|                             | Jails       | Banned IPs    |
+          {{ padstr }}+-----------------------------+-------------+---------------+
+          {% for result in jail_ban_results.results %}
+          {{ padstr }}| {{ fail2ban_pods[loop.index0] | center(29) }} | {{ result.stdout_lines[0] | default('0') | center(11) }}   | {{ result.stdout_lines[1] | default('0') | center(13) }}   |
+          {{ padstr }}+-----------------------------+-------------+---------------+
+          {% endfor %}
+
+    - name: Print jail/ban summary table
+      debug:
+        msg: "{{ jail_ban_table }}"
