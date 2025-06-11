@@ -20,13 +20,6 @@
         state: directory
         mode: '0755'
 
-    - name: Ensure github.com is a known host
-      known_hosts:
-        path: /root/.ssh/known_hosts   # or /home/ansible/.ssh/known_hosts if using ansible user
-        name: github.com
-        key: "{{ lookup('pipe', 'ssh-keyscan github.com') }}"
-        state: present
-
     - name: Clone repo into dated subfolder
       git:
         repo: "{{ repo_url }}"
