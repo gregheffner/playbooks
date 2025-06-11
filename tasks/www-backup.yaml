@@ -1,0 +1,35 @@
+---
+- name: Ensure dated backup of git repo
+  hosts: dockerhost
+  become: yes
+  vars:
+    repo_url: "git@github.com:gregheffner/www.git"
+    dest_dir: "/mnt/QNAP/www-backup"
+    dated_dir: "{{ dest_dir }}/{{ ansible_date_time.date }}"
+
+  tasks:
+    - name: Ensure destination directory exists
+      file:
+        path: "{{ dest_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Ensure dated subfolder exists
+      file:
+        path: "{{ dated_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Ensure github.com is a known host
+      known_hosts:
+        path: /root/.ssh/known_hosts   # or /home/ansible/.ssh/known_hosts if using ansible user
+        name: github.com
+        key: "{{ lookup('pipe', 'ssh-keyscan github.com') }}"
+        state: present
+
+    - name: Clone repo into dated subfolder
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ dated_dir }}"
+        update: yes
+        key_file: "/root/.ssh/id_rsa"
