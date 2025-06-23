@@ -13,6 +13,14 @@
         deb: /tmp/cloudflared.deb
         state: present
 
-    - name: Restart cloudflared service using systemctl
-      ansible.builtin.command:
-        cmd: sudo systemctl restart cloudflared
+    - name: Find all cloudflared tunnel services
+      ansible.builtin.shell: |
+        systemctl list-units --type=service --all | grep -o 'cloudflared-[^ ]*\.service' | sort | uniq
+      register: cloudflared_services
+
+    - name: Restart each cloudflared tunnel service
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      loop: "{{ cloudflared_services.stdout_lines }}"
