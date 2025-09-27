@@ -34,6 +34,7 @@
       shell: which brew
       register: brew_check
       changed_when: false
+      failed_when: false
 
     - name: Update Homebrew
       shell: brew update
@@ -43,11 +44,9 @@
       shell: brew upgrade
       when: brew_check.stdout != ""
 
-    - name: Append to local file
-      delegate_to: localhost
-      lineinfile:
-        path: "/mnt/QNAP/backuplogs/updates/updates.txt"
-        line: "Last dockerhost update on {{ inventory_hostname }}: {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
+    - name: Remove Stale Homebrew packages
+      shell: brew cleanup --prune=all
+      when: brew_check.stdout != ""
 
     - name: Reboot
       shell: systemctl reboot -i
