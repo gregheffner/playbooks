@@ -1,5 +1,8 @@
 ---
-- hosts: k8s_cluster
+- import_playbook: pause_monitors.yml
+
+- name: Kubernetes cluster maintenance with rolling reboots
+  hosts: k8s_cluster
   serial: 1
   tasks:
     - name: Drain the node
@@ -18,10 +21,12 @@
         delay: 30
         timeout: 500
 
-    - name: Pause for 5 seconds
+    - name: Pause for 15 seconds
       pause:
         seconds: 15
-   
+
     - name: Uncordon the node
       command: kubectl uncordon {{ inventory_hostname }}
       delegate_to: k8-primary
+
+- import_playbook: unpause_monitors.yml
