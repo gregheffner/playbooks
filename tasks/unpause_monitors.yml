@@ -1,0 +1,99 @@
+---
+- name: Unpause all Datadog monitors and synthetic tests
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  pre_tasks:
+    - name: Get Datadog API key from 1Password
+      shell: op read "op://Private/vault_dd_api_key/password"
+      register: dd_api_key_result
+      no_log: true
+
+    - name: Get Datadog Application key from 1Password  
+      shell: op read "op://Private/vault_dd_app_key/password"
+      register: dd_app_key_result
+      no_log: true
+
+    - name: Set API key variables
+      set_fact:
+        datadog_api_key: "{{ dd_api_key_result.stdout }}"
+        datadog_app_key: "{{ dd_app_key_result.stdout }}"
+      no_log: true
+
+  tasks:
+    - name: Get all monitors
+      uri:
+        url: "https://api.us5.datadoghq.com/api/v1/monitor"
+        method: GET
+        headers:
+          DD-API-KEY: "{{ datadog_api_key }}"
+          DD-APPLICATION-KEY: "{{ datadog_app_key }}"
+        return_content: yes
+        status_code: 200
+      register: monitors_response
+
+    - name: Display number of monitors found
+      debug:
+        msg: "Found {{ monitors_response.json | length }} monitors to check for unmuting"
+
+    - name: Unmute each monitor
+      uri:
+        url: "https://api.us5.datadoghq.com/api/v1/monitor/{{ item.id }}/unmute"
+        method: POST
+        headers:
+          DD-API-KEY: "{{ datadog_api_key }}"
+          DD-APPLICATION-KEY: "{{ datadog_app_key }}"
+          Content-Type: "application/json"
+        status_code: 200
+      loop: "{{ monitors_response.json }}"
+      when: monitors_response.json is defined
+      register: unmute_results
+      # Continue even if some monitors aren't muted
+      failed_when: false
+
+    - name: Get all synthetic tests
+      uri:
+        url: "https://api.us5.datadoghq.com/api/v1/synthetics/tests"
+        method: GET
+        headers:
+          DD-API-KEY: "{{ datadog_api_key }}"
+          DD-APPLICATION-KEY: "{{ datadog_app_key }}"
+        return_content: yes
+        status_code: 200
+      register: synthetics_response
+
+    - name: Display number of synthetic tests found
+      debug:
+        msg: "Found {{ synthetics_response.json.tests | length }} synthetic tests to check for unpausing"
+
+    - name: Unpause each synthetic test
+      uri:
+        url: "https://api.us5.datadoghq.com/api/v1/synthetics/tests/{{ item.public_id }}"
+        method: PUT
+        headers:
+          DD-API-KEY: "{{ datadog_api_key }}"
+          DD-APPLICATION-KEY: "{{ datadog_app_key }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          name: "{{ item.name }}"
+          type: "{{ item.type }}"
+          subtype: "{{ item.subtype | default(omit) }}"
+          config: "{{ item.config }}"
+          locations: "{{ item.locations }}"
+          options: "{{ item.options }}"
+          tags: "{{ item.tags }}"
+          status: "live"
+          message: "{{ item.message }}"
+        status_code: 200
+      loop: "{{ synthetics_response.json.tests }}"
+      when: synthetics_response.json.tests is defined and item.status == "paused"
+      register: synthetic_unpause_results
+
+    - name: Summary of actions
+      debug:
+        msg: |
+          Unpausing completed:
+          - Monitors unmuted: {{ unmute_results.results | selectattr('status', 'equalto', 200) | list | length }}
+          - Synthetic tests unpaused: {{ synthetic_unpause_results.results | selectattr('status', 'equalto', 200) | list | length if synthetic_unpause_results.results is defined else 0 }}
