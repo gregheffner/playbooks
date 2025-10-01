@@ -1,16 +1,17 @@
----
-- import_playbook: pause_monitors.yml
+- import_playbook: /home/ansible/playbooks/tasks/pause_monitors.yml
 
 - name: Kubernetes cluster maintenance with rolling reboots
   hosts: k8s_cluster
   serial: 1
   tasks:
     - name: Drain the node
-      command: kubectl drain {{ inventory_hostname }} --ignore-daemonsets --delete-emptydir-data
+      command: kubectl drain {{ inventory_hostname }} --ignore-daemonsets --delete-emptydir-data --force --timeout=300s
       delegate_to: k8-primary
+      register: drain_result
+      failed_when: drain_result.rc != 0
 
     - name: Reboot the node
-      shell: systemctl reboot -i
+      shell: systemctl reboot
       async: 1
       poll: 0
       ignore_errors: true
@@ -19,14 +20,20 @@
     - name: Wait for SSH to come back
       wait_for_connection:
         delay: 30
-        timeout: 500
+        timeout: 600
 
-    - name: Pause for 15 seconds
-      pause:
-        seconds: 15
+    - name: Wait for node to be ready
+      command: kubectl get node {{ inventory_hostname }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+      delegate_to: k8-primary
+      register: node_status
+      until: node_status.stdout == "True"
+      retries: 30
+      delay: 10
 
     - name: Uncordon the node
       command: kubectl uncordon {{ inventory_hostname }}
       delegate_to: k8-primary
+      register: uncordon_result
+      failed_when: uncordon_result.rc != 0
 
-- import_playbook: unpause_monitors.yml
+- import_playbook: /home/ansible/playbooks/tasks/unpause_monitors.yml
