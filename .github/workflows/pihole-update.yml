@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-pihole:
-    runs-on: localworker
+    runs-on: dockerhost
     
     steps:
       - name: Checkout repository
