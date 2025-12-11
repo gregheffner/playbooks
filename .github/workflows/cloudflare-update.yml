@@ -1,0 +1,39 @@
+name: Update Cloudflared
+
+on:
+  workflow_dispatch:  # Allows manual trigger
+  schedule:
+    - cron: '0 10 * * 6' 
+
+jobs:
+  update-cloudflared:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download cloudflared package
+        run: |
+          curl -L -o /tmp/cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+      
+      - name: Install cloudflared package
+        run: |
+          sudo apt install -y /tmp/cloudflared.deb
+      
+      - name: Find all cloudflared tunnel services
+        id: find_services
+        run: |
+          systemctl list-units --type=service --all | grep -o 'cloudflared-[^ ]*\.service' | sort | uniq > /tmp/cloudflared_services.txt
+          cat /tmp/cloudflared_services.txt
+      
+      - name: Restart cloudflared tunnel services
+        run: |
+          while IFS= read -r service; do
+            echo "Restarting $service"
+            sudo systemctl restart "$service"
+            sudo systemctl enable "$service"
+          done < /tmp/cloudflared_services.txt
+      
+      - name: Verify cloudflared version
+        run: cloudflared --version
