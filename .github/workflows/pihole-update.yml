@@ -1,0 +1,20 @@
+name: Update Pi-hole
+
+on:
+  workflow_dispatch:  # Allows manual trigger
+  schedule:
+    - cron: '0 10 * * 0'  # Run weekly on Sunday at 10 AM UTC
+
+jobs:
+  update-pihole:
+    runs-on: localworker
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Update Pi-hole
+        run: sudo pihole -up
+      
+      - name: Get Pi-hole version
+        run: pihole -v
