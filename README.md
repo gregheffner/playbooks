@@ -21,23 +21,43 @@ Replace `<playbook.yml>` with the playbook you want to run, and `<destination>` 
 
 Below is a summary of the available playbooks and what they do:
 
-| Playbook                | Platform      | Purpose / Main Actions                                      |
-|-------------------------|--------------|-------------------------------------------------------------|
-| cronschedule.yml        | Linux/macOS   | Set up or update cron jobs for scheduled updates             |
-| macbackground.yml       | macOS         | Change desktop background image                              |
-| macupdate.yml           | macOS         | Update Homebrew and all installed packages                   |
-| main.yml                | Linux         | Install Docker and set up Kali Linux container               |
-| twingateupdate.yml      | Linux         | Update and restart Twingate Docker containers                |
-| update.yml              | Linux/macOS   | System updates, Docker restarts, logging, and reboot         |
-| wifijoin.yml            | Linux/macOS   | Configure Wi-Fi credentials and connect to network           |
-| win_disk.yml            | Windows       | Get disk usage and partition info via PowerShell             |
-| winpeas.yml             | Windows       | Run WinPEAS for privilege escalation auditing                |
-| winupdate.yml           | Windows       | Run Windows Update and install available updates             |
-| docker_cleanup.yml      | Linux         | Remove unused Docker images, containers, and volumes         |
-| network_scan.yml        | Linux         | Scan local network for active devices (nmap)                 |
-| service_restart.yml     | Linux         | Check and restart specified services                         |
-| cloudflaredupdate.yml   | Linux         | Install/update Cloudflare Tunnel and restart service         |
-| piholeupdate.yml        | Linux         | Update Pi-hole to latest version                             |
+| Playbook/Task File                | Platform/Scope      | Purpose / Main Actions                                      |
+|-------------------------|-------------------|-------------------------------------------------------------|
+| cronschedule.yml        | Linux/macOS       | Set up or update cron jobs for scheduled updates             |
+| macbackground.yml       | macOS             | Change desktop background image                              |
+| macupdate.yml           | macOS             | Update Homebrew and all installed packages                   |
+| main.yml                | Linux             | Install Docker and set up Kali Linux container               |
+| twingateupdate.yml      | Linux             | Update and restart Twingate Docker containers                |
+| update.yml              | Linux/macOS       | System updates, Docker restarts, logging, and reboot         |
+| wifijoin.yml            | Linux/macOS       | Configure Wi-Fi credentials and connect to network           |
+| win_disk.yml            | Windows           | Get disk usage and partition info via PowerShell             |
+| winpeas.yml             | Windows           | Run WinPEAS for privilege escalation auditing                |
+| winupdate.yml           | Windows           | Run Windows Update and install available updates             |
+| docker_cleanup.yml      | Linux             | Remove unused Docker images, containers, and volumes         |
+| network_scan.yml        | Linux             | Scan local network for active devices (nmap)                 |
+| service_restart.yml     | Linux             | Check and restart specified services                         |
+| cloudflaredupdate.yml   | Linux             | Install/update Cloudflare Tunnel and restart service         |
+| piholeupdate.yml        | Linux             | Update Pi-hole to latest version                             |
+| update-role.yml         | Linux             | Update role for Ansible hosts                                |
+| win_discord.yml         | Windows           | Remove Discord from Windows                                  |
+| winpeas.yml             | Windows           | Run WinPEAS for privilege escalation auditing                |
+| windns.yml              | Windows           | Configure Windows DNS settings                               |
+| winIP.yml               | Windows           | Set or update Windows IP configuration                       |
+| winFAMdns.yml           | Windows           | Configure Family DNS on Windows                              |
+| removediscord.yml       | Linux             | Remove Discord from Linux                                    |
+| removediscordmac.yml    | macOS             | Remove Discord from macOS                                    |
+| examples/weekly-patching.yml | Linux        | Example: Weekly patching schedule                            |
+| tasks/Docker.yml        | Linux             | Docker management tasks                                      |
+| tasks/cloudflaredupdate.yml | Linux         | Cloudflare Tunnel update tasks                               |
+| tasks/piholeupdate.yml  | Linux             | Pi-hole update tasks                                         |
+| tasks/k8reboot.yml      | Linux/K8s         | Kubernetes node reboot tasks                                 |
+| tasks/kaliDockerBuild.yml | Linux           | Build Kali Linux Docker image                                |
+| tasks/pause_monitors.yml | Linux            | Pause monitoring services                                    |
+| tasks/unpause_monitors.yml | Linux          | Unpause monitoring services                                  |
+| tasks/www-backup.yaml   | Linux             | Web server backup tasks                                      |
+| tasks/fail2ban/fail2ban.yaml | Linux        | Fail2Ban configuration                                      |
+| group_vars/development.yml | All            | Group variables for development                              |
+| group_vars/production.yml  | All            | Group variables for production                               |
 
 ---
 
