@@ -1,102 +1,77 @@
-<div align="center">
-    <h1>Ansible Playbooks</h1>
-</div>
 
-## Playbook Details
+# Ansible Playbooks Collection
 
-### 1. **`cronschedule.yml`**
-- **Purpose**: Configures a cron job to set an update schedule.
-- **Key Tasks**:
-  - Creates or updates a cron job to automate system updates.
-
-### 2. **`macbackground.yml`**
-- **Purpose**: Sets a background image on macOS.
-- **Key Tasks**:
-  - Copies a specified image file to the system.
-  - Updates macOS settings to apply the new background.
-
-### 3. **`macupdate.yml`**
-- **Purpose**: Updates macOS packages and applications.
-- **Key Tasks**:
-  - Runs `brew update` to update Homebrew.
-  - Upgrades all installed Homebrew packages.
-
-### 4. **`main.yml`**
-- **Purpose**: Installs Docker and Kali Linux.
-- **Key Tasks**:
-  - Installs Docker on the target system.
-  - Sets up Kali Linux as a Docker container.
-
-### 5. **`Twingateupdate.yml`**
-- **Purpose**: Updates Twingate Docker images.
-- **Key Tasks**:
-  - Pulls the latest Twingate Docker images.
-  - Restarts the Twingate containers.
-
-### 6. **`update.yml`**
-- **Purpose**: Updates Linux systems, restarts Docker containers, and logs update details.
-- **Key Tasks**:
-  - Updates all APT packages (Debian-based systems).
-  - Performs a distribution upgrade.
-  - Restarts all running Docker containers.
-  - Updates Homebrew and upgrades packages (if on macOS).
-  - Logs update details to a file.
-  - Reboots the system.
-
-### 7. **`wifijoin.yml`**
-- **Purpose**: Configures a system to join a specified Wi-Fi network.
-- **Key Tasks**:
-  - Sets up Wi-Fi credentials.
-  - Ensures the system connects to the specified network.
-
-### 8. **`win_disk.yml`**
-- **Purpose**: Retrieves disk information for Windows systems.
-- **Key Tasks**:
-  - Runs PowerShell commands to gather disk usage and partition details.
-
-### 9. **`winpeas.yml`**
-- **Purpose**: A Windows equivalent of LinPEAS for privilege escalation auditing.
-- **Key Tasks**:
-  - Executes a script to gather system information for security auditing.
-
-### 10. **`winupdate.yml`**
-- **Purpose**: Runs Windows updates remotely.
-- **Key Tasks**:
-  - Initiates Windows Update.
-  - Installs available updates.
-
-### 11. **`docker_cleanup.yml`**
-- **Purpose**: Cleans up unused Docker resources.
-- **Key Tasks**:
-  - Removes unused Docker images, containers, and volumes.
-  - Frees up disk space on the system.
-
-### 12. **`network_scan.yml`**
-- **Purpose**: Performs a network scan to identify active devices.
-- **Key Tasks**:
-  - Uses tools like `nmap` to scan the local network.
-  - Generates a report of active devices and their IP addresses.
-
-### 13. **`service_restart.yml`**
-- **Purpose**: Restarts specified services on the target system.
-- **Key Tasks**:
-  - Checks the status of specified services.
-  - Restarts services if they are not running.
-
-### 14. **`cloudflaredupdate.yml`**
-- **Purpose**: Installs and updates Cloudflare Tunnel on Ubuntu systems.
-- **Key Tasks**:
-  - Downloads the latest Cloudflare Tunnel package.
-  - Installs the package using APT.
-  - Restarts the `cloudflared` service using `systemctl`.
-
-### 15. **`piholeupdate.yml`**
-- **Purpose**: Updates Pi-hole to the latest version.
-- **Key Tasks**:
-  - Runs the `pihole -up` command to update Pi-hole.
-  - Displays the result of the update process.
+Welcome! This repository contains a set of ready-to-use Ansible playbooks for automating common tasks across macOS, Linux, and Windows systems.
 
 ---
+
+## Quick Start
+
+To run a playbook:
+
+```bash
+ansible-playbook <playbook.yml> -l <destination>
+```
+
+Replace `<playbook.yml>` with the playbook you want to run, and `<destination>` with your target host or group.
+
+---
+
+## Playbook Overview
+
+Below is a summary of the available playbooks and what they do:
+
+| Playbook                | Platform      | Purpose / Main Actions                                      |
+|-------------------------|--------------|-------------------------------------------------------------|
+| cronschedule.yml        | Linux/macOS   | Set up or update cron jobs for scheduled updates             |
+| macbackground.yml       | macOS         | Change desktop background image                              |
+| macupdate.yml           | macOS         | Update Homebrew and all installed packages                   |
+| main.yml                | Linux         | Install Docker and set up Kali Linux container               |
+| twingateupdate.yml      | Linux         | Update and restart Twingate Docker containers                |
+| update.yml              | Linux/macOS   | System updates, Docker restarts, logging, and reboot         |
+| wifijoin.yml            | Linux/macOS   | Configure Wi-Fi credentials and connect to network           |
+| win_disk.yml            | Windows       | Get disk usage and partition info via PowerShell             |
+| winpeas.yml             | Windows       | Run WinPEAS for privilege escalation auditing                |
+| winupdate.yml           | Windows       | Run Windows Update and install available updates             |
+| docker_cleanup.yml      | Linux         | Remove unused Docker images, containers, and volumes         |
+| network_scan.yml        | Linux         | Scan local network for active devices (nmap)                 |
+| service_restart.yml     | Linux         | Check and restart specified services                         |
+| cloudflaredupdate.yml   | Linux         | Install/update Cloudflare Tunnel and restart service         |
+| piholeupdate.yml        | Linux         | Update Pi-hole to latest version                             |
+
+---
+
+
+## More Playbooks & Tasks
+
+You’ll also find additional playbooks and task files in the `tasks/` folder, including:
+
+- Docker management
+- Cloudflare Tunnel updates
+- Pi-hole updates
+- Fail2Ban configuration
+- Kali Linux Docker builds
+- Service restarts and more
+
+Check the folder structure for more examples and reusable roles.
+
+---
+
+## Contributing & Notes
+
+- Playbooks are written for clarity and easy customization.
+- Most playbooks are self-contained, but some may require variables (see `group_vars/`).
+- For questions or improvements, feel free to open an issue or PR.
+
+---
+
+## License
+
+See repository for license details.
+
+---
+
+Happy automating!
 
 ## How to Deploy
 
