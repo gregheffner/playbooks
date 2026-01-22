@@ -1,14 +1,15 @@
 name: Update and Start Homepage
 
-
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual trigger
   schedule:
-    - cron: '0 9 * * 6'
+    - cron: '0 10 * * 6'  # Run weekly on Sunday at 10 AM UTC
 
 jobs:
   update-pihole:
     runs-on: self-hosted
+    
+    steps:
     
       - name: Checkout repository
         uses: actions/checkout@v4
