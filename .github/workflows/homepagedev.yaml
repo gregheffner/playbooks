@@ -1,0 +1,22 @@
+name: Update and Start Homepage
+
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 6'
+
+jobs:
+  update-pihole:
+    runs-on: self-hosted
+    
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Pull latest Docker images
+        run: docker compose pull
+        working-directory: /home/ansible/scripts/homepage-dev/app
+
+      - name: Run start-secure.sh
+        run: ./start-secure.sh
+        working-directory: /home/ansible/scripts/homepage-dev/app
