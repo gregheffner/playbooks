@@ -17,7 +17,3 @@ jobs:
       - name: Pull latest Docker images
         run: docker compose pull
         working-directory: /home/ansible/scripts/homepage-dev/app
-
-      - name: Run start-secure.sh
-        run: ./start-secure.sh
-        working-directory: /home/ansible/scripts/homepage-dev/app
