@@ -1,4 +1,4 @@
-name: Update and Start Homepage
+name: Update Homepage
 
 on:
   workflow_dispatch:  # Allows manual trigger
@@ -6,7 +6,7 @@ on:
     - cron: '0 10 * * 6'  # Run weekly on Sunday at 10 AM UTC
 
 jobs:
-  update-pihole:
+  update-homepage:
     runs-on: self-hosted
     
     steps:
